@@ -118,21 +118,26 @@ describe('gulp-eslint plugin', () => {
 
 	it('should emit an error when it fails to load a plugin', done => {
 		const pluginName = 'this-is-unknown-plugin';
-		eslint({plugins: [pluginName]})
-		.on('error', err => {
+		try {
+			eslint({plugins: [pluginName]});
+		} catch (err) {
 			err.plugin.should.equal('gulp-eslint');
 			// Remove stack trace from error message as it's machine-dependent
 			const message = err.message.split('\n')[0];
 			message.should.equal(`Failed to load plugin '${pluginName}' declared in 'CLIOptions': Cannot find module 'eslint-plugin-${
 				pluginName
 			}'`);
-
+		} finally {
 			done();
+		}
+		/*
+		.on('error', err => {
 		})
 		.end(new File({
 			path: 'test/fixtures/file.js',
 			contents: Buffer.from('')
 		}));
+		*/
 	});
 
 	describe('"warnFileIgnored" option', () => {
